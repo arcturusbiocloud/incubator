@@ -4,27 +4,34 @@
 #include "DHT.h"
 
 #define DHTPIN A0     // what pin we're connected to
-
-// Uncomment whatever type you're using!
-//#define DHTTYPE DHT11   // DHT 11 
-#define DHTTYPE DHT22   // DHT 22  (AM2302)
-//#define DHTTYPE DHT21   // DHT 21 (AM2301)
-
-// Connect pin 1 (on the left) of the sensor to +5V
-// Connect pin 2 of the sensor to whatever your DHTPIN is
-// Connect pin 4 (on the right) of the sensor to GROUND
-// Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
+#define DHTTYPE DHT22 // DHT 22  (AM2302)
 
 DHT dht(DHTPIN, DHTTYPE);
 
-const int powerPin = A1;
-
+#define INCUBATOR_LIGHT_PIN A1
+#define UV_PIN A2
+#define TENT_LIGHT_PIN 2
 
 void setup() 
 {
     Serial.begin(9600); 
-    Serial.println("DHTxx test!");
-    pinMode(powerPin, OUTPUT);
+    Serial.println("Arcturus Incubator and lights controller *__*");
+    
+    // pin setup
+    pinMode(INCUBATOR_LIGHT_PIN, OUTPUT);
+    pinMode(UV_PIN, OUTPUT);
+    pinMode(TENT_LIGHT_PIN, OUTPUT);
+ 
+    //start with the incubator light on. LOW/HIGH are inverted
+    digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+        
+    // starts with tent light on. LOW/HIGH are inverted
+    digitalWrite(TENT_LIGHT_PIN, LOW);
+    
+    // start with the uv light off
+    digitalWrite(UV_PIN, LOW);
+    
+    // starts the temperature sensor
     dht.begin();
 }
 
@@ -35,14 +42,14 @@ void loop()
     float h = dht.readHumidity();
     float t = dht.readTemperature();
 
-
     if (t < 37) {
-      digitalWrite(powerPin, LOW);
+      //turn incubator light on
+      digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
     } 
     else {
-      digitalWrite(powerPin, HIGH);
+      //turn incubator light off
+      digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
     }
-
 
     // check if returns are valid, if they are NaN (not a number) then something went wrong!
     if (isnan(t) || isnan(h)) 
@@ -56,6 +63,6 @@ void loop()
         Serial.print(" %\t");
         Serial.print("Temperature: "); 
         Serial.print(t);
-        Serial.println(" *C");
+        Serial.print(" *C");
     }
 }
