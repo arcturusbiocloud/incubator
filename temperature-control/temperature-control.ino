@@ -15,7 +15,8 @@ DHT dht(DHTPIN, DHTTYPE);
 void setup() 
 {
     Serial.begin(9600); 
-    Serial.println("Arcturus Incubator and lights controller *__*");
+    Serial.println("Arcturus Incubator and lights controller connected");
+    Serial.setTimeout(25);
     
     // pin setup
     pinMode(INCUBATOR_LIGHT_PIN, OUTPUT);
@@ -37,6 +38,14 @@ void setup()
 
 void loop() 
 {
+    char buffer[64];
+    size_t length = 64;
+   
+    // clean the serial buffer
+    memset(buffer,0,sizeof(buffer));
+    
+    // implement serial read bytes and read command
+  
     // Reading temperature or humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
     float h = dht.readHumidity();
