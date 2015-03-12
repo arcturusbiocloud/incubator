@@ -36,6 +36,8 @@ void setup()
     dht.begin();
 }
 
+int UV_ON = 0;
+
 void loop() 
 {
     char buffer[64];
@@ -45,13 +47,34 @@ void loop()
     memset(buffer,0,sizeof(buffer));
     
     // implement serial read bytes and read command
+    length = Serial.readBytes(buffer, length);
+    if (length > 0) {
+      if (strcmp(buffer, "UV_ON") == 0) {
+        UV_ON = 1;
+        //turn incubator light off
+        digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+        // turn tent light off.
+        digitalWrite(TENT_LIGHT_PIN, HIGH);
+        // turn the UV light ON
+        digitalWrite(UV_PIN, HIGH);
+      }
+      if (strcmp(buffer, "UV_OFF") == 0) {
+        UV_ON = 0;
+        //turn incubator light on
+        digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+        // turn tent light on
+        digitalWrite(TENT_LIGHT_PIN, LOW);
+        // turn the UV light off
+        digitalWrite(UV_PIN, LOW);
+       }
+    }
   
     // Reading temperature or humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
     float h = dht.readHumidity();
     float t = dht.readTemperature();
 
-    if (t < 37) {
+    if (t < 37 && UV_ON == 0) {
       //turn incubator light on
       digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
     } 
@@ -72,6 +95,6 @@ void loop()
         Serial.print(" %\t");
         Serial.print("Temperature: "); 
         Serial.print(t);
-        Serial.print(" *C");
+        Serial.println(" *C");
     }
 }
