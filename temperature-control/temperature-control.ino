@@ -13,11 +13,7 @@ DHT dht(DHTPIN, DHTTYPE);
 #define TENT_LIGHT_PIN 2
 
 void setup() 
-{
-    Serial.begin(9600); 
-    Serial.println("Arcturus Incubator and lights controller connected");
-    Serial.setTimeout(25);
-    
+{    
     // pin setup
     pinMode(INCUBATOR_LIGHT_PIN, OUTPUT);
     pinMode(UV_PIN, OUTPUT);
@@ -32,6 +28,9 @@ void setup()
     // start with the uv light off
     digitalWrite(UV_PIN, LOW);
     
+    // serial handshake
+    Serial.begin(9600);
+    Serial.println("Arcturus Incubator and lights controller connected");   
     // starts the temperature sensor
     dht.begin();
 }
@@ -41,60 +40,65 @@ int UV_ON = 0;
 void loop() 
 {
     char buffer[64];
-    size_t length = 64;
+    size_t length = 1;
    
     // clean the serial buffer
     memset(buffer,0,sizeof(buffer));
-    
-    // implement serial read bytes and read command
-    length = Serial.readBytes(buffer, length);
-    if (length > 0) {
-      if (strcmp(buffer, "UV_ON") == 0) {
-        UV_ON = 1;
-        //turn incubator light off
-        digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
-        // turn tent light off.
-        digitalWrite(TENT_LIGHT_PIN, HIGH);
-        // turn the UV light ON
-        digitalWrite(UV_PIN, HIGH);
-      }
-      if (strcmp(buffer, "UV_OFF") == 0) {
-        UV_ON = 0;
-        //turn incubator light on
-        digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
-        // turn tent light on
-        digitalWrite(TENT_LIGHT_PIN, LOW);
-        // turn the UV light off
-        digitalWrite(UV_PIN, LOW);
-       }
-    }
-  
+   
     // Reading temperature or humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
     float h = dht.readHumidity();
     float t = dht.readTemperature();
-
-    if (t < 37 && UV_ON == 0) {
+    
+    // implement serial read bytes and read command
+    if (Serial.available()) {
+      length = Serial.readBytes(buffer, length);
+      if (length > 0) {
+        if (buffer[0] == '1') {
+          UV_ON = 1;
+          //turn incubator light off
+          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+          // turn tent light off.
+          digitalWrite(TENT_LIGHT_PIN, HIGH);
+          // turn the UV light ON
+          digitalWrite(UV_PIN, HIGH);
+          Serial.println("1");
+        }
+        if (buffer[0] == '0') {
+          UV_ON = 0;
+          //turn incubator light on
+          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+          // turn tent light on
+          digitalWrite(TENT_LIGHT_PIN, LOW);
+          // turn the UV light off
+          digitalWrite(UV_PIN, LOW);
+          Serial.println("0");
+         }
+         if (buffer[0] == '2') {
+         // check if returns are valid, if they are NaN (not a number) then something went wrong!
+           if (isnan(t) || isnan(h)) 
+           {
+             Serial.println("Failed to read from DHT");
+           } 
+           else 
+           {
+             Serial.print("Humidity: "); 
+             Serial.print(h);
+             Serial.print(" %\t");
+             Serial.print("Temperature: "); 
+             Serial.print(t);
+             Serial.println(" *C");
+           }      
+         }
+      }
+    }
+  
+    if (t < 30 && UV_ON == 0) {
       //turn incubator light on
       digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
     } 
     else {
       //turn incubator light off
       digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
-    }
-
-    // check if returns are valid, if they are NaN (not a number) then something went wrong!
-    if (isnan(t) || isnan(h)) 
-    {
-        Serial.println("Failed to read from DHT");
-    } 
-    else 
-    {
-        Serial.print("Humidity: "); 
-        Serial.print(h);
-        Serial.print(" %\t");
-        Serial.print("Temperature: "); 
-        Serial.print(t);
-        Serial.println(" *C");
     }
 }
