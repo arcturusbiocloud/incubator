@@ -80,10 +80,10 @@ void loop()
           } else {
             Serial.print("Humidity: "); 
             Serial.print(h);
-            Serial.print(" %\t");
+            Serial.print("% ");
             Serial.print("Temperature: "); 
             Serial.print(t);
-            Serial.println(" *C");
+            Serial.println("C");
           }      
         }
       }
