@@ -86,6 +86,22 @@ void loop()
             Serial.println("C");
           }      
         }
+        if (buffer[0] == '3') {
+          UV_ON = 1;
+          //turn incubator light off
+          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+          // turn tent light off.
+          digitalWrite(TENT_LIGHT_PIN, HIGH);
+          Serial.println("3");
+        }
+        if (buffer[0] == '4') {
+          UV_ON = 0;
+          //turn incubator light on
+          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+          // turn tent light on
+          digitalWrite(TENT_LIGHT_PIN, LOW);
+          Serial.println("4");
+        }
       }
     }
   
