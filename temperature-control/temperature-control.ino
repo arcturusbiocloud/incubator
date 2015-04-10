@@ -105,7 +105,7 @@ void loop()
       }
     }
   
-    if (t < 30 && UV_ON == 0) {
+    if (t < 37 && UV_ON == 0) {
       //turn incubator light on
       digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
     } 
