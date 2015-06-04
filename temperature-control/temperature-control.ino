@@ -5,11 +5,11 @@
 
 #define DHTPIN A0     // what pin we're connected to
 #define DHTTYPE DHT22 // DHT 22  (AM2302)
-
 DHT dht(DHTPIN, DHTTYPE);
 
 #define INCUBATOR_LIGHT_PIN A1
 #define UV_PIN A2
+#define CENTRIFUGE_PIN A3
 #define TENT_LIGHT_PIN 2
 
 void setup() 
@@ -27,9 +27,13 @@ void setup()
     
     // start with the uv light off
     digitalWrite(UV_PIN, LOW);
+
+    // start with the centrifuge off  
+    digitalWrite(CENTRIFUGE_PIN, LOW);
     
     // serial handshake
     Serial.begin(9600);
+
     // starts the temperature sensor
     dht.begin();
 }
@@ -101,6 +105,16 @@ void loop()
           // turn tent light on
           digitalWrite(TENT_LIGHT_PIN, LOW);
           Serial.println("4");
+        }
+        if (buffer[0] == '5') {
+          // turn the centrifuge on
+          digitalWrite(CENTRIFUGE_PIN, HIGH);
+          Serial.println("5");
+        }
+        if (buffer[0] == '6') {
+          // turn the centrifuge off
+          digitalWrite(CENTRIFUGE_PIN, LOW);
+          Serial.println("6");
         }
       }
     }
