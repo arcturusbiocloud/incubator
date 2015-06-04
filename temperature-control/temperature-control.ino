@@ -20,11 +20,11 @@ void setup()
     pinMode(CENTRIFUGE_PIN, OUTPUT);
     pinMode(TENT_LIGHT_PIN, OUTPUT);
  
-    //start with the incubator light on. LOW/HIGH are inverted
-    digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+    //start with the incubator light on
+    digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
         
-    // starts with tent light on. LOW/HIGH are inverted
-    digitalWrite(TENT_LIGHT_PIN, LOW);
+    // starts with tent light on
+    digitalWrite(TENT_LIGHT_PIN, HIGH);
     
     // start with the uv light off
     digitalWrite(UV_PIN, LOW);
@@ -60,9 +60,9 @@ void loop()
         if (buffer[0] == '0') {
           UV_ON = 0;
           //turn incubator light on
-          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
           // turn tent light on
-          digitalWrite(TENT_LIGHT_PIN, LOW);
+          digitalWrite(TENT_LIGHT_PIN, HIGH);
           // turn the UV light off
           digitalWrite(UV_PIN, LOW);
           Serial.println("0");
@@ -70,9 +70,9 @@ void loop()
         if (buffer[0] == '1') {
           UV_ON = 1;
           //turn incubator light off
-          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
           // turn tent light off.
-          digitalWrite(TENT_LIGHT_PIN, HIGH);
+          digitalWrite(TENT_LIGHT_PIN, LOW);
           // turn the UV light ON
           digitalWrite(UV_PIN, HIGH);
           Serial.println("1");
@@ -94,17 +94,17 @@ void loop()
         if (buffer[0] == '3') {
           UV_ON = 1;
           //turn incubator light off
-          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
           // turn tent light off.
-          digitalWrite(TENT_LIGHT_PIN, HIGH);
+          digitalWrite(TENT_LIGHT_PIN, LOW);
           Serial.println("3");
         }
         if (buffer[0] == '4') {
           UV_ON = 0;
           //turn incubator light on
-          digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+          digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
           // turn tent light on
-          digitalWrite(TENT_LIGHT_PIN, LOW);
+          digitalWrite(TENT_LIGHT_PIN, HIGH);
           Serial.println("4");
         }
         if (buffer[0] == '5') {
@@ -122,10 +122,10 @@ void loop()
   
     if (t < 37 && UV_ON == 0) {
       //turn incubator light on
-      digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
+      digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
     } 
     else {
       //turn incubator light off
-      digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
+      digitalWrite(INCUBATOR_LIGHT_PIN, LOW);
     }
 }
