@@ -17,6 +17,7 @@ void setup()
     // pin setup
     pinMode(INCUBATOR_LIGHT_PIN, OUTPUT);
     pinMode(UV_PIN, OUTPUT);
+    pinMode(CENTRIFUGE_PIN, OUTPUT);
     pinMode(TENT_LIGHT_PIN, OUTPUT);
  
     //start with the incubator light on. LOW/HIGH are inverted
