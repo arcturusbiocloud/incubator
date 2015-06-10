@@ -11,6 +11,8 @@ DHT dht(DHTPIN, DHTTYPE);
 #define UV_PIN A2
 #define CENTRIFUGE_PIN A3
 #define TENT_LIGHT_PIN 2
+#define SHAKER 3
+#define GEL 4
 
 void setup() 
 {    
@@ -19,6 +21,8 @@ void setup()
     pinMode(UV_PIN, OUTPUT);
     pinMode(CENTRIFUGE_PIN, OUTPUT);
     pinMode(TENT_LIGHT_PIN, OUTPUT);
+    pinMode(SHAKER, OUTPUT);
+    pinMode(GEL, OUTPUT);
  
     //start with the incubator light on
     digitalWrite(INCUBATOR_LIGHT_PIN, HIGH);
@@ -31,6 +35,12 @@ void setup()
 
     // start with the centrifuge off  
     digitalWrite(CENTRIFUGE_PIN, LOW);
+    
+    // start with the shaker off
+    digitalWrite(SHAKER, LOW);
+    
+    // start with the gel off
+    digitalWrite(GEL, LOW);
     
     // serial handshake
     Serial.begin(9600);
@@ -116,6 +126,26 @@ void loop()
           // turn the centrifuge off
           digitalWrite(CENTRIFUGE_PIN, LOW);
           Serial.println("6");
+        }
+        if (buffer[0] == '7') {
+          // turn the shaker on
+          digitalWrite(SHAKER, HIGH);
+          Serial.println("7");
+        }
+        if (buffer[0] == '8') {
+          // turn the shaker off
+          digitalWrite(SHAKER, LOW);
+          Serial.println("8");
+        }
+        if (buffer[0] == '9') {
+          // turn the gel on
+          digitalWrite(GEL, HIGH);
+          Serial.println("9");
+        }
+        if (buffer[0] == 'A') {
+          // turn the gel off
+          digitalWrite(GEL, LOW);
+          Serial.println("A");
         }
       }
     }
